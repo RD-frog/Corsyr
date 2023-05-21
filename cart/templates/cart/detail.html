@@ -1,0 +1,80 @@
+{% extends 'shop/base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row" style="margin-top: 6%">
+        <h2>
+            <span class="badge pull-right">
+                {% with totail_items=cart|length %}
+                    {% if cart|length > 0 %}
+                    Поточний список покупок:
+                        <a href="{% url "cart:cart_detail" %}" style="color: #ffffff">
+                            {{ totail_items }} item {{ totail_items|pluralize }}, {{ cart.get_total_price }}
+                        </a>
+                        {% else %}
+                        Ваш кошик порожній.
+                    {% endif %}
+                {% endwith %}
+            </span>
+        </h2>
+        <table class="table table-white table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Зображення</th>
+                <th scope="col">Товар</th>
+                <th scope="col">Кількість</th>
+                <th scope="col">Видалити</th>
+                <th scope="col">Ціна одного товару</th>
+                <th scope="col">Ціна</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    {% with product=item.product  %}
+                        <tr>
+                            <th scope="row">
+                                <a href="{{ product.get__absolute_url }}">
+                                    <img src="{% if product.image %} {{ product.image.url }} {% else %} {% static 'img/default.jpg' %} {% endif %}" alt="..." style="height: 130px; width: auto">
+                            </a>
+                            </th>
+                            <td>{{ product.name }}</td>
+                            <td>
+                                <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.override }}
+                                    <input type="submit" value="Змінити"class="btn btn-primary">
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                        
+                            <td>
+                                <form action="{% url 'cart:cart_remove' product.id %}" method="post">
+                                    <input type="submit" value="Удалить"class="btn btn-primary">
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                            <td> {{ item.price }}</td>
+                            <td> {{ item.total_price }}</td>
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+                <tr>
+                    <td><b>Сумарна вартість</b></td>
+                    <td colspan="4"></td>
+                    <td colspan="num"><b> {{ cart.get_total_price }}</b></td>
+                </tr>
+            </tbody>
+          </table>
+                
+                </tbody>
+            </table>
+        <p class="text-right">
+            <a href="{% url "shop:product_list" %}" class="btn btn-default">Продовжити покупку</a>
+            <a href="{% url "orders:order_create" %}" class="btn btn-primary">Оформити замовлення</a>
+        </p>
+        </div>
+    </div>
+{% endblock %}
