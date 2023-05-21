@@ -1,0 +1,43 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}
+Ваш кошик | Оформлення замовлення
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row" style="margin-top: 6%">
+      <div class="col-md-8">
+        <h4 class="page-header">Форма замовлення</h4>
+        <form action="." method="post">
+          {% csrf_token %}
+          <table class="table">
+            {% for field in form %}
+              <tr>
+                <th>{{ field.label_tag }}</th>
+                <td>{{ field }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+          <br>
+          <input type="submit" class="btn btn-primary" value="Підтвердити замовлення">
+        </form>
+      </div>
+      <div class="col-md-4">
+        <div class="page-header">
+            Замовлення
+        </div>
+        <ul class="list-group">
+          {% for item in cart %}
+            <li class="list-group-item">
+              {{ item.quantity }}x {{ item.product.name }}
+              <span> {{ item.total_price }}</span>
+            </li>
+          {% endfor %}
+          <li class="list-group-item active"> {{ cart.get_total_price }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}
