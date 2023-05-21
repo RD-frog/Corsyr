@@ -1,0 +1,39 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="container">
+        <div class="row" style="margin-bottom: 5%;">
+            <div class="col-sm-4">
+                    <img src="{{ product.image.url }}" alt="" style="width: 100%">
+            </div>
+            <div class="col-sm-8">
+                <h1>{{ product.name }}</h1>
+                <p>{{ product.description | safe }}</p>
+                <form action="{% url "cart:cart_add" product.id %}" method="post">
+                  <h3 style="margin-bottom: 30px;">Цінa товару: <span class="price">${{ product.price }}</span></h3>
+                  <form action="{% url 'cart:cart_add' product.id %}" method="post" style="margin-right: 100px;">
+                 
+                      
+                        {% csrf_token %}
+                        {{ cart_product_form }} 
+                        <input type="submit" value="До Кошика" class="btn btn-outline-primary">
+                    </form>
+          
+                <form type="submit"  style="margin-top: 20px;"value="Previous Page" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" onClick="window.history.back();return false;">
+                  Повернутися в до покупок
+                    
+                </form>
+                  
+                {% csrf_token %}
+            </div>
+        </div>
+        
+    <div class="btn-group" role="group" aria-label="...">
+        {% for category in category_list %}
+            <a class="btn btn-outline-secondary" href="{{ category.get_absolute_url }}" role="button" style="margin-left: 10px;">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+    
+{% endblock %}

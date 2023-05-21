@@ -1,0 +1,85 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}
+ {% if category %}
+ {{ category.name}}
+ {% else %}
+Товари
+ {% endif %}
+{% endblock title %}
+
+{% block content %}
+ <div class="container">
+
+   <div class="row">
+     <div class="col-sm-3">
+       <ul class="list-group">
+         <li class="list-group-item">
+           <a href="/"class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Усі категорії</a>
+         </li>
+
+         {% for category in categories %}
+         <li class="list-group-item" >
+           <a href="{{ category.get_absolute_url }}"class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">{{ category.name }}</a>
+         </li>
+         {% endfor %}
+
+       </ul>
+     </div>
+
+     <div class="col-sm-9">
+       <div class="row">
+
+         {% for product in products %}
+         <div class="col-md-4 mb-4">
+           <div class="card h-100">
+            <a href="{{ product.get_absolute_url }}">
+                <img class="card-img-top" src="{% if product.image %}
+                    {{ product.image.url }}
+                {% else %}
+                    {% static 'img/no_image.png' %}
+                {% endif %}" alt="">
+            </a>
+             <div class="card-body">
+               <h4 class="card-title">
+                 <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+               </h4>
+               <h5>${{ product.price }}</h5>
+               <p class="card-text">{{ product.name }}</p>
+             </div>
+             <div class="card-footer">
+               <small class="text-muted">{{ product.category }}</small>
+             </div>
+           </div>
+         </div>
+         {% endfor %}
+
+       </div>
+     </div>
+
+   </div>
+   {% if products.has_other_pages %}
+   <div class="pagination"  >
+       <span class="page-links"style=" margin: 0 auto;">
+           {% if products.has_previous %}
+               <a href="?page=1">&laquo; Перша</a>
+               <a href="?page={{ products.previous_page_number }}">попередній</a>
+           {% endif %}
+
+           <span class="page-current">
+            Сторінка {{ products.number }} /  {{ products.paginator.num_pages }}
+           </span>
+
+           {% if products.has_next %}
+               <a href="?page={{ products.next_page_number }}">наступнa</a>
+               <a href="?page={{ products.paginator.num_pages }}">остання &raquo;</a>
+           {% endif %}
+       </span>
+   </div>
+{% endif %}
+
+ </div>
+
+ 
+{% endblock %}
